@@ -1,7 +1,7 @@
 declare global {
   interface Window {
-    gtag: (...args: any[]) => void;
-    dataLayer: any[];
+    gtag: (command: string, ...args: unknown[]) => void;
+    dataLayer: unknown[];
   }
 }
 
@@ -19,7 +19,7 @@ export const initGA = () => {
   if (typeof window === 'undefined') return;
 
   window.dataLayer = window.dataLayer || [];
-  function gtag(...args: any[]) {
+  function gtag(command: string, ...args: unknown[]) {
     window.dataLayer.push(args);
   }
   gtag('js', new Date());

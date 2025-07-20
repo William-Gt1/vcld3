@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { POST } from '../waitlist/route';
 import { mockFormData } from '@/tests/utils';
+import * as serverUtils from '@/lib/server-utils';
 
 // Mock Supabase client
 jest.mock('@/lib/server-utils', () => ({
@@ -70,8 +71,8 @@ describe('POST /api/waitlist', () => {
 
   it('handles rate limiting', async () => {
     // Mock rate limit check to return not allowed
-    const { checkRateLimit } = require('@/lib/server-utils');
-    checkRateLimit.mockResolvedValueOnce({
+    const { checkRateLimit } = serverUtils;
+    (checkRateLimit as jest.Mock).mockResolvedValueOnce({
       allowed: false,
       remaining: 0,
       reset: Date.now() + 15 * 60 * 1000,

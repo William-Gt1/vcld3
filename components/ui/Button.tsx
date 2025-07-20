@@ -4,7 +4,7 @@ import { ButtonHTMLAttributes, forwardRef } from 'react';
 import { LoadingSpinner } from './LoadingSpinner';
 import { cn } from '@/lib/utils';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
   loadingText?: string;
   variant?: 'primary' | 'secondary';
