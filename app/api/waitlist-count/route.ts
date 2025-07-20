@@ -5,10 +5,10 @@ export const revalidate = 300; // Cache response for 5 minutes
 
 export async function GET() {
   try {
-    const count = await getWaitlistCount();
-
+    // For initial development, return a mock count
+    // Later, we'll replace this with actual database count
     return NextResponse.json(
-      { count },
+      { count: 42 },
       {
         status: 200,
         headers: {

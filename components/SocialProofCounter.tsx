@@ -12,41 +12,44 @@ export function SocialProofCounter({ className }: SocialProofCounterProps) {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    let isMounted = true;
     const fetchCount = async () => {
       try {
         const response = await fetch('/api/waitlist-count', {
-          // Avoid any caching issues in the browser
+          // Avoid caching issues during development
           cache: 'no-store',
         });
-
-        const data = await response.json();
-
+        
         if (!response.ok) {
+          const data = await response.json();
           throw new Error(data.error || 'Failed to fetch count');
         }
 
-        if (isMounted) {
-          setCount(data.count);
-          setError(false);
-        }
+        const data = await response.json();
+        setCount(data.count);
+        setError(false);
       } catch (err) {
         console.error('Error fetching waitlist count:', err);
-        if (isMounted) setError(true);
+        setError(true);
       }
     };
 
     fetchCount();
 
     // Refresh count every 5 minutes
-    const intervalId = setInterval(fetchCount, 5 * 60 * 1000);
-    return () => {
-      isMounted = false;
-      clearInterval(intervalId);
-    };
+    const interval = setInterval(fetchCount, 5 * 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
 
-  // Loading or error fallback
+  // Show loading state for first render
+  if (count === null && !error) {
+    return (
+      <p className={cn('text-lg text-gray-600 animate-pulse', className)}>
+        Loading waitlist count...
+      </p>
+    );
+  }
+
+  // Show fallback for error state
   if (error || count === null) {
     return (
       <p className={cn('text-lg text-gray-600', className)}>

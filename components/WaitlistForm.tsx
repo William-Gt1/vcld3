@@ -1,3 +1,5 @@
+'use client';
+
 import { useWaitlistForm } from '@/lib/hooks/useWaitlistForm';
 import {
   Button,

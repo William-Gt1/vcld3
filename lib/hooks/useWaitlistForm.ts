@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useCallback } from 'react';
 import { WaitlistFormData, validateField, waitlistFormSchema } from '@/lib/validation';
 import { z } from 'zod';
