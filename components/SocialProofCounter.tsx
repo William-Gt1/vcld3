@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -10,30 +12,41 @@ export function SocialProofCounter({ className }: SocialProofCounterProps) {
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
     const fetchCount = async () => {
       try {
-        const response = await fetch('/api/waitlist-count');
+        const response = await fetch('/api/waitlist-count', {
+          // Avoid any caching issues in the browser
+          cache: 'no-store',
+        });
+
         const data = await response.json();
-        
+
         if (!response.ok) {
           throw new Error(data.error || 'Failed to fetch count');
         }
 
-        setCount(data.count);
-        setError(false);
+        if (isMounted) {
+          setCount(data.count);
+          setError(false);
+        }
       } catch (err) {
         console.error('Error fetching waitlist count:', err);
-        setError(true);
+        if (isMounted) setError(true);
       }
     };
 
     fetchCount();
 
     // Refresh count every 5 minutes
-    const interval = setInterval(fetchCount, 5 * 60 * 1000);
-    return () => clearInterval(interval);
+    const intervalId = setInterval(fetchCount, 5 * 60 * 1000);
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
   }, []);
 
+  // Loading or error fallback
   if (error || count === null) {
     return (
       <p className={cn('text-lg text-gray-600', className)}>
@@ -51,4 +64,4 @@ export function SocialProofCounter({ className }: SocialProofCounterProps) {
       builders already on the waitlist
     </p>
   );
-} 
+}
