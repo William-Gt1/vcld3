@@ -5,6 +5,12 @@ import {
   getClientInfo,
   insertWaitlistSubmission,
 } from '@/lib/server-utils';
+import { z } from 'zod';
+
+const RATE_LIMIT = {
+  MAX_REQUESTS: 5,
+  WINDOW_MS: 1000 * 60 * 15, // 15 minutes
+};
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,7 +37,10 @@ export async function POST(request: NextRequest) {
 
     // Parse and validate request body
     const body = await request.json();
+    console.log('Request body:', body);
+    
     const validatedData = waitlistFormSchema.parse(body);
+    console.log('Validated data:', validatedData);
 
     // Submit to database
     await insertWaitlistSubmission({
@@ -47,9 +56,18 @@ export async function POST(request: NextRequest) {
       { message: 'Successfully joined the waitlist!' },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Waitlist submission error:', error);
 
+    // Handle Zod validation errors
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Invalid form data', details: error.format() },
+        { status: 400 }
+      );
+    }
+
+    // Handle known database errors
     if (error instanceof Error) {
       if (error.message === 'This email is already on the waitlist') {
         return NextResponse.json(
@@ -57,16 +75,18 @@ export async function POST(request: NextRequest) {
           { status: 409 } // Conflict
         );
       }
+
+      // Log detailed error information
+      console.error('Detailed error:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+      });
     }
 
     return NextResponse.json(
-      { error: 'Failed to join waitlist' },
+      { error: 'Failed to join waitlist. Please try again.' },
       { status: 500 }
     );
   }
-}
-
-const RATE_LIMIT = {
-  MAX_REQUESTS: 5,
-  WINDOW_MS: 1000 * 60 * 15, // 15 minutes
-}; 
+} 

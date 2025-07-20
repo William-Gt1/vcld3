@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const waitlistFormSchema = z.object({
-  name: z
+  fullName: z
     .string()
     .min(2, 'Name must be at least 2 characters')
     .max(50, 'Name cannot exceed 50 characters')
@@ -12,7 +12,7 @@ export const waitlistFormSchema = z.object({
     .max(100, 'Email cannot exceed 100 characters')
     .trim()
     .toLowerCase(),
-  subscribed_to_newsletter: z.boolean().default(false),
+  acceptTerms: z.boolean().default(false),
 });
 
 export type WaitlistFormData = z.infer<typeof waitlistFormSchema>;

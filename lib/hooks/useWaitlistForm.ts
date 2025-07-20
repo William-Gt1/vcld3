@@ -1,17 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { waitlistFormSchema } from '@/lib/validation';
+import type { WaitlistFormData } from '@/lib/validation';
 import { z } from 'zod';
-
-const waitlistSchema = z.object({
-  fullName: z.string().min(2, 'Please enter your full name'),
-  email: z.string().email('Please enter a valid email address'),
-  acceptTerms: z.boolean().refine((val) => val, {
-    message: 'Please accept the terms to continue',
-  }),
-});
-
-type WaitlistFormData = z.infer<typeof waitlistSchema>;
 
 export function useWaitlistForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,7 +13,7 @@ export function useWaitlistForm() {
 
   const validateForm = (data: WaitlistFormData) => {
     try {
-      waitlistSchema.parse(data);
+      waitlistFormSchema.parse(data);
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -56,8 +48,10 @@ export function useWaitlistForm() {
         body: JSON.stringify(formData),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to join waitlist. Please try again.');
+        throw new Error(data.error || 'Failed to join waitlist. Please try again.');
       }
 
       setIsSubmitted(true);

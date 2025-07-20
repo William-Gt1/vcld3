@@ -6,7 +6,7 @@ import { Database } from '@/types/database';
 // Initialize Supabase admin client for server-side operations
 const supabaseAdmin = createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
 // Cache configuration
@@ -86,20 +86,34 @@ export async function getWaitlistCount(): Promise<number> {
 }
 
 export async function insertWaitlistSubmission(data: {
-  name: string;
+  fullName: string;
   email: string;
-  subscribed_to_newsletter: boolean;
+  acceptTerms: boolean;
   ip_address: string;
   user_agent: string;
   utm_source: string | null;
   utm_medium: string | null;
   utm_campaign: string | null;
 }) {
+  console.log('Inserting waitlist submission:', data);
+  
   const { error } = await supabaseAdmin
     .from('waitlist_submissions')
-    .insert([data]);
+    .insert([{
+      name: data.fullName,
+      email: data.email,
+      subscribed_to_newsletter: data.acceptTerms,
+      ip_address: data.ip_address,
+      user_agent: data.user_agent,
+      utm_source: data.utm_source,
+      utm_medium: data.utm_medium,
+      utm_campaign: data.utm_campaign
+    }]);
+
+  console.log('Insert result:', error || 'success');
 
   if (error) {
+    console.error('Database error:', error);
     if (error.code === '23505') { // Unique violation
       throw new Error('This email is already on the waitlist');
     }
