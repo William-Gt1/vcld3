@@ -1,6 +1,5 @@
 import type { Config } from 'tailwindcss';
 import defaultTheme from 'tailwindcss/defaultTheme';
-import animatePlugin from 'tailwindcss-animate';
 
 const config: Config = {
   content: [
@@ -12,38 +11,35 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
         primary: {
-          50: 'hsl(var(--primary-50))',
-          100: 'hsl(var(--primary-100))',
-          200: 'hsl(var(--primary-200))',
-          300: 'hsl(var(--primary-300))',
-          400: 'hsl(var(--primary-400))',
-          500: 'hsl(var(--primary-500))',
-          600: 'hsl(var(--primary-600))',
-          700: 'hsl(var(--primary-700))',
-          800: 'hsl(var(--primary-800))',
-          900: 'hsl(var(--primary-900))',
-          950: 'hsl(var(--primary-950))',
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#0ea5e9',
+          600: '#0284c7',
+          700: '#0369a1',
+          800: '#075985',
+          900: '#0c4a6e',
+          950: '#082f49',
         },
         accent: {
-          50: 'hsl(var(--accent-50))',
-          100: 'hsl(var(--accent-100))',
-          200: 'hsl(var(--accent-200))',
-          300: 'hsl(var(--accent-300))',
-          400: 'hsl(var(--accent-400))',
-          500: 'hsl(var(--accent-500))',
-          600: 'hsl(var(--accent-600))',
-          700: 'hsl(var(--accent-700))',
-          800: 'hsl(var(--accent-800))',
-          900: 'hsl(var(--accent-900))',
-          950: 'hsl(var(--accent-950))',
+          50: '#faf5ff',
+          100: '#f3e8ff',
+          200: '#e9d5ff',
+          300: '#d8b4fe',
+          400: '#c084fc',
+          500: '#a855f7',
+          600: '#9333ea',
+          700: '#7e22ce',
+          800: '#6b21a8',
+          900: '#581c87',
+          950: '#3b0764',
         },
       },
       fontFamily: {
         sans: ['var(--font-inter)', ...defaultTheme.fontFamily.sans],
-        heading: ['var(--font-cal-sans)', ...defaultTheme.fontFamily.sans],
       },
       fontSize: {
         '2xs': ['0.625rem', { lineHeight: '0.75rem' }],
@@ -94,12 +90,12 @@ const config: Config = {
         '4xl': '2rem',
       },
       boxShadow: {
-        'input-focus': '0 0 0 3px hsla(var(--primary-500), 0.35)',
-        'button-focus': '0 0 0 3px hsla(var(--primary-500), 0.4)',
+        'input-focus': '0 0 0 3px rgba(14, 165, 233, 0.35)',
+        'button-focus': '0 0 0 3px rgba(14, 165, 233, 0.4)',
       },
     },
   },
-  plugins: [animatePlugin],
+  plugins: [require('tailwindcss-animate')],
 };
 
 export default config; 

@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import localFont from 'next/font/local';
 import { defaultSEO, courseSchema, organizationSchema } from '@/lib/seo';
 import './globals.css';
 
@@ -9,12 +8,6 @@ const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
-});
-
-const calSans = localFont({
-  src: '../public/fonts/CalSans-SemiBold.woff2',
-  display: 'swap',
-  variable: '--font-cal-sans',
 });
 
 // Metadata configuration
@@ -79,7 +72,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${calSans.variable}`}
+      className={inter.variable}
       suppressHydrationWarning
     >
       <head>
@@ -88,7 +81,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={structuredData}
         />
       </head>
-      <body className="min-h-screen bg-background font-sans antialiased">
+      <body className="min-h-screen bg-white font-sans antialiased">
         <a
           href="#main-content"
           className="fixed left-4 top-4 z-50 -translate-y-[150%] rounded-md bg-primary-600 px-4 py-2 text-sm text-white transition-transform focus:translate-y-0"

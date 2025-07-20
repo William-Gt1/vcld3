@@ -24,7 +24,7 @@ export function HeroSection() {
         <div className="flex min-h-[calc(100vh-5rem)] flex-col items-center gap-12 py-16 lg:flex-row lg:py-24">
           {/* Content Column */}
           <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-left">
-            <h1 className="font-heading text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
+            <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
               <span className="block">Master Vibe Coding</span>
               <span className="mt-2 block text-primary-600">
                 Ship Your MVP in 30 Days
@@ -53,7 +53,7 @@ export function HeroSection() {
                 >
                   <div className="shrink-0 text-primary-600">{feature.icon}</div>
                   <div>
-                    <h3 className="font-heading text-lg font-semibold text-gray-900">
+                    <h3 className="text-lg font-semibold text-gray-900">
                       {feature.title}
                     </h3>
                     <p className="mt-2 text-sm text-gray-600">
