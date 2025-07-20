@@ -1,95 +1,100 @@
 'use client';
 
+import { FormEvent } from 'react';
 import { useWaitlistForm } from '@/lib/hooks/useWaitlistForm';
-import {
-  Button,
-  Input,
-  Checkbox,
-  ErrorMessage,
-  SuccessMessage,
-} from '@/components/ui';
+import { Button } from './ui/Button';
+import { Input } from './ui/Input';
+import { Checkbox } from './ui/Checkbox';
+import { ErrorMessage } from './ui/ErrorMessage';
+import { SuccessMessage } from './ui/SuccessMessage';
 
 export function WaitlistForm() {
   const {
-    formData,
-    errors,
+    register,
+    handleSubmit: submitForm,
     isSubmitting,
+    isSubmitted,
+    errors,
     submitError,
-    isSuccess,
-    handleChange,
-    handleSubmit,
   } = useWaitlistForm();
 
-  if (isSuccess) {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    await submitForm({
+      fullName: formData.get('fullName') as string,
+      email: formData.get('email') as string,
+      acceptTerms: formData.get('acceptTerms') === 'on',
+    });
+  };
+
+  if (isSubmitted) {
     return (
-      <div className="space-y-4">
-        <SuccessMessage message="Thanks for joining the waitlist! We'll be in touch soon." />
+      <div className="text-center">
+        <SuccessMessage
+          message="You've been added to the waitlist! We'll notify you when we launch."
+          className="mb-6"
+        />
         <p className="text-sm text-gray-600">
-          {formData.subscribed_to_newsletter &&
-            "You're all set to receive our newsletter updates."}
+          Follow us on{' '}
+          <a
+            href="https://twitter.com/vibecoding"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-primary hover:text-primary-dark"
+          >
+            Twitter
+          </a>{' '}
+          for updates.
         </p>
       </div>
     );
   }
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSubmit();
-      }}
-      className="space-y-6"
-      noValidate
-    >
-      <Input
-        label="Full Name"
-        id="name"
-        name="name"
-        type="text"
-        placeholder="Your full name"
-        value={formData.name}
-        onChange={(e) => handleChange('name', e.target.value)}
-        error={errors.name}
-        required
-        autoComplete="name"
-        disabled={isSubmitting}
-      />
+    <div>
+      <div className="mb-8 text-center">
+        <h2 className="text-2xl font-bold text-gray-900">Join the Waitlist</h2>
+        <p className="mt-2 text-sm text-gray-600">
+          Be the first to know when we launch and get exclusive early access.
+        </p>
+      </div>
 
-      <Input
-        label="Email Address"
-        id="email"
-        name="email"
-        type="email"
-        placeholder="your@email.com"
-        value={formData.email}
-        onChange={(e) => handleChange('email', e.target.value)}
-        error={errors.email}
-        required
-        autoComplete="email"
-        disabled={isSubmitting}
-      />
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <Input
+          {...register('fullName')}
+          label="Full Name"
+          placeholder="John Doe"
+          error={errors.fullName}
+        />
 
-      <Checkbox
-        label="Subscribe to course updates, product releases, and our newsletter"
-        id="newsletter"
-        name="newsletter"
-        checked={formData.subscribed_to_newsletter}
-        onChange={(e) =>
-          handleChange('subscribed_to_newsletter', e.target.checked)
-        }
-        disabled={isSubmitting}
-      />
+        <Input
+          {...register('email')}
+          type="email"
+          label="Email Address"
+          placeholder="john@example.com"
+          error={errors.email}
+        />
 
-      {submitError && <ErrorMessage message={submitError} />}
+        <Checkbox
+          {...register('acceptTerms')}
+          label="I agree to receive updates about the course"
+          error={errors.acceptTerms}
+        />
 
-      <Button
-        type="submit"
-        isLoading={isSubmitting}
-        loadingText="Joining waitlist..."
-        className="w-full"
-      >
-        Join the Waitlist
-      </Button>
-    </form>
+        {submitError && (
+          <ErrorMessage message={submitError} className="mt-4" />
+        )}
+
+        <Button
+          type="submit"
+          className="w-full"
+          isLoading={isSubmitting}
+          loadingText="Joining..."
+        >
+          Join Now
+        </Button>
+      </form>
+    </div>
   );
 } 

@@ -1,26 +1,24 @@
 'use client';
 
 import { ButtonHTMLAttributes, forwardRef } from 'react';
-import { cn } from '@/lib/utils';
 import { LoadingSpinner } from './LoadingSpinner';
+import { cn } from '@/lib/utils';
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
   loadingText?: string;
+  variant?: 'primary' | 'secondary';
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       className,
-      variant = 'primary',
-      size = 'md',
-      isLoading = false,
-      loadingText,
-      disabled,
       children,
+      isLoading,
+      loadingText,
+      variant = 'primary',
+      disabled,
       ...props
     },
     ref
@@ -28,24 +26,26 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
-        disabled={isLoading || disabled}
         className={cn(
           'btn',
           {
             'btn-primary': variant === 'primary',
             'btn-secondary': variant === 'secondary',
-            'btn-outline': variant === 'outline',
-            'text-gray-700 hover:bg-gray-100': variant === 'ghost',
-            'btn-sm': size === 'sm',
-            'btn-md': size === 'md',
-            'btn-lg': size === 'lg',
+            'cursor-not-allowed opacity-50': disabled || isLoading,
           },
           className
         )}
+        disabled={disabled || isLoading}
         {...props}
       >
-        {isLoading && <LoadingSpinner size="sm" />}
-        {isLoading && loadingText ? loadingText : children}
+        {isLoading ? (
+          <>
+            <LoadingSpinner size="sm" />
+            {loadingText || 'Loading...'}
+          </>
+        ) : (
+          children
+        )}
       </button>
     );
   }

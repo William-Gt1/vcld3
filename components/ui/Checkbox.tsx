@@ -20,7 +20,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             type="checkbox"
             id={checkboxId}
             className={cn(
-              'h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+              'form-checkbox',
               {
                 'border-red-500 focus:ring-red-500': error,
               },
@@ -31,11 +31,11 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             {...props}
           />
         </div>
-        <div className="ml-2">
+        <div className="ml-3">
           {label && (
             <label
               htmlFor={checkboxId}
-              className={cn('text-sm font-medium text-gray-900', {
+              className={cn('form-label !mb-0 !inline-block', {
                 'text-red-500': error,
               })}
             >
@@ -45,7 +45,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           {error && (
             <p
               id={`${checkboxId}-error`}
-              className="mt-1 text-sm text-red-500"
+              className="form-error"
             >
               {error}
             </p>

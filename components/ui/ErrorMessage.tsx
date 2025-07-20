@@ -1,3 +1,5 @@
+'use client';
+
 import { cn } from '@/lib/utils';
 
 interface ErrorMessageProps {
@@ -11,14 +13,14 @@ export function ErrorMessage({ message, className }: ErrorMessageProps) {
   return (
     <div
       className={cn(
-        'rounded-md bg-red-50 p-4 text-sm text-red-500',
+        'rounded-lg bg-red-50 p-4 text-sm text-red-600',
         className
       )}
       role="alert"
     >
-      <div className="flex">
+      <div className="flex items-center gap-2">
         <svg
-          className="h-5 w-5 text-red-400"
+          className="h-5 w-5 text-red-500"
           viewBox="0 0 20 20"
           fill="currentColor"
           aria-hidden="true"
@@ -29,7 +31,7 @@ export function ErrorMessage({ message, className }: ErrorMessageProps) {
             clipRule="evenodd"
           />
         </svg>
-        <span className="ml-2">{message}</span>
+        <span>{message}</span>
       </div>
     </div>
   );

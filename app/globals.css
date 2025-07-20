@@ -3,84 +3,77 @@
 @tailwind utilities;
 
 @layer base {
-  /* Base styles */
+  :root {
+    --primary: 255, 59, 48;
+    --primary-dark: 224, 46, 36;
+    --primary-light: 255, 107, 100;
+    --background: #FFFFFF;
+    --text: #1A1A1A;
+    --text-light: #666666;
+    --border: #E5E5E5;
+  }
+
   body {
     @apply bg-white text-gray-900 antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
-  }
-
-  /* Typography */
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-sans font-semibold tracking-tight;
-  }
-
-  /* Focus styles */
-  :focus-visible {
-    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
-  }
-
-  /* Form elements */
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  input[type="search"],
-  input[type="tel"],
-  textarea {
-    @apply block w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-base text-gray-900 transition-colors placeholder:text-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
-  }
-
-  /* Selection styles */
-  ::selection {
-    @apply bg-primary-100 text-primary-900;
   }
 }
 
 @layer components {
-  /* Button base styles */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 font-semibold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .btn-primary {
-    @apply bg-primary-600 text-white hover:bg-primary-700;
+    @apply bg-primary text-white hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
   }
 
   .btn-secondary {
-    @apply bg-accent-600 text-white hover:bg-accent-700;
+    @apply bg-white text-primary border-2 border-primary hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
   }
 
-  .btn-outline {
-    @apply border border-gray-200 bg-white text-gray-900 hover:bg-gray-50;
+  .form-input {
+    @apply block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-base transition-colors placeholder:text-gray-500 hover:border-primary focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
-  /* Size variants */
-  .btn-sm {
-    @apply h-8 px-3 text-sm;
+  .form-label {
+    @apply mb-2 block text-sm font-semibold text-gray-900;
   }
 
-  .btn-md {
-    @apply h-10 px-4 text-base;
+  .form-error {
+    @apply mt-2 text-sm text-primary;
   }
 
-  .btn-lg {
-    @apply h-12 px-6 text-lg;
+  .form-helper {
+    @apply mt-2 text-sm text-gray-500;
+  }
+
+  .form-checkbox {
+    @apply h-5 w-5 rounded border-gray-300 text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2;
+  }
+
+  .hero-pattern {
+    background-color: #ffffff;
+    background-image: radial-gradient(rgb(var(--primary)) 0.5px, #ffffff 0.5px);
+    background-size: 10px 10px;
+    opacity: 0.1;
+  }
+
+  .feature-card {
+    @apply relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md;
+  }
+
+  .feature-icon {
+    @apply mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/5 text-primary;
   }
 }
 
-@layer utilities {
-  /* Custom utilities */
-  .text-balance {
-    text-wrap: balance;
-  }
+/* Modern animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
 
-  .text-pretty {
-    text-wrap: pretty;
-  }
-
-  /* Animation utilities */
-  .animate-in {
-    animation-duration: 0.3s;
-    animation-timing-function: ease-out;
-    animation-fill-mode: forwards;
-  }
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }

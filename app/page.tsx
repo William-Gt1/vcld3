@@ -42,7 +42,7 @@ export default function Home() {
                 >
                   Privacy Policy
                 </a>
-              </li>
+          </li>
               <li>
                 <a
                   href="#"

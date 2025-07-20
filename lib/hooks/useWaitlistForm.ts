@@ -1,107 +1,88 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { WaitlistFormData, validateField, waitlistFormSchema } from '@/lib/validation';
+import { useState } from 'react';
 import { z } from 'zod';
 
-interface UseWaitlistFormReturn {
-  formData: WaitlistFormData;
-  errors: Partial<Record<keyof WaitlistFormData, string>>;
-  isSubmitting: boolean;
-  submitError: string | null;
-  isSuccess: boolean;
-  handleChange: (field: keyof WaitlistFormData, value: string | boolean) => void;
-  handleSubmit: () => Promise<void>;
-  reset: () => void;
-}
+const waitlistSchema = z.object({
+  fullName: z.string().min(2, 'Please enter your full name'),
+  email: z.string().email('Please enter a valid email address'),
+  acceptTerms: z.boolean().refine((val) => val, {
+    message: 'Please accept the terms to continue',
+  }),
+});
 
-const initialFormData: WaitlistFormData = {
-  name: '',
-  email: '',
-  subscribed_to_newsletter: false,
-};
+type WaitlistFormData = z.infer<typeof waitlistSchema>;
 
-export function useWaitlistForm(): UseWaitlistFormReturn {
-  const [formData, setFormData] = useState<WaitlistFormData>(initialFormData);
-  const [errors, setErrors] = useState<Partial<Record<keyof WaitlistFormData, string>>>({});
+export function useWaitlistForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errors, setErrors] = useState<Partial<Record<keyof WaitlistFormData, string>>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleChange = useCallback((field: keyof WaitlistFormData, value: string | boolean) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => {
-      const error = validateField(field, value);
-      return error ? { ...prev, [field]: error } : { ...prev, [field]: undefined };
-    });
-  }, []);
-
-  const validateForm = useCallback((): boolean => {
-    const result = waitlistFormSchema.safeParse(formData);
-    if (!result.success) {
-      const formErrors: Partial<Record<keyof WaitlistFormData, string>> = {};
-      const formattedErrors = result.error.format();
-      
-      Object.keys(formData).forEach((key) => {
-        const fieldKey = key as keyof WaitlistFormData;
-        const fieldErrors = formattedErrors[fieldKey]?._errors;
-        if (fieldErrors?.[0]) {
-          formErrors[fieldKey] = fieldErrors[0];
-        }
-      });
-      
-      setErrors(formErrors);
+  const validateForm = (data: WaitlistFormData) => {
+    try {
+      waitlistSchema.parse(data);
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const formattedErrors: Record<string, string> = {};
+        error.issues.forEach((err) => {
+          if (err.path[0]) {
+            formattedErrors[err.path[0] as keyof WaitlistFormData] = err.message;
+          }
+        });
+        setErrors(formattedErrors);
+      }
       return false;
     }
-    return true;
-  }, [formData]);
+  };
 
-  const handleSubmit = useCallback(async () => {
+  const handleSubmit = async (formData: WaitlistFormData) => {
+    setIsSubmitting(true);
     setSubmitError(null);
-    
-    if (!validateForm()) {
+    setErrors({});
+
+    if (!validateForm(formData)) {
+      setIsSubmitting(false);
       return;
     }
-
-    setIsSubmitting(true);
 
     try {
       const response = await fetch('/api/waitlist', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to submit form');
+        throw new Error('Failed to join waitlist. Please try again.');
       }
 
-      setIsSuccess(true);
-      setFormData(initialFormData);
+      setIsSubmitted(true);
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'Something went wrong');
     } finally {
       setIsSubmitting(false);
     }
-  }, [formData, validateForm]);
+  };
 
-  const reset = useCallback(() => {
-    setFormData(initialFormData);
-    setErrors({});
-    setSubmitError(null);
-    setIsSuccess(false);
-  }, []);
+  const register = (name: keyof WaitlistFormData) => ({
+    name,
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+      return value;
+    },
+  });
 
   return {
-    formData,
-    errors,
-    isSubmitting,
-    submitError,
-    isSuccess,
-    handleChange,
+    register,
     handleSubmit,
-    reset,
+    isSubmitting,
+    isSubmitted,
+    errors,
+    submitError,
   };
 } 

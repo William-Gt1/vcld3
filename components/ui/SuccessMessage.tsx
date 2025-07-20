@@ -1,3 +1,5 @@
+'use client';
+
 import { cn } from '@/lib/utils';
 
 interface SuccessMessageProps {
@@ -11,14 +13,14 @@ export function SuccessMessage({ message, className }: SuccessMessageProps) {
   return (
     <div
       className={cn(
-        'rounded-md bg-green-50 p-4 text-sm text-green-500',
+        'rounded-lg bg-green-50 p-4 text-sm text-green-600',
         className
       )}
       role="alert"
     >
-      <div className="flex">
+      <div className="flex items-center gap-2">
         <svg
-          className="h-5 w-5 text-green-400"
+          className="h-5 w-5 text-green-500"
           viewBox="0 0 20 20"
           fill="currentColor"
           aria-hidden="true"
@@ -29,7 +31,7 @@ export function SuccessMessage({ message, className }: SuccessMessageProps) {
             clipRule="evenodd"
           />
         </svg>
-        <span className="ml-2">{message}</span>
+        <span>{message}</span>
       </div>
     </div>
   );
